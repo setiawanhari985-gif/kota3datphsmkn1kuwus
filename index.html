@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kota 3D SMKN 1 Kuwus</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --gold:#f5c518;--gold-light:#ffe066;--sky:#38bdf8;
+  --green:#22c55e;--glow:rgba(245,197,24,0.55);
+}
+
+html,body{width:100%;height:100%;overflow:hidden;background:#000814;
+  font-family:'Rajdhani',sans-serif;color:#f0f9ff}
+
+/* ─── Canvas latar ─── */
+#bg-canvas{position:fixed;inset:0;z-index:0}
+
+.overlay{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 110%,rgba(0,20,50,.85) 0%,transparent 70%),
+             linear-gradient(to top,rgba(0,8,20,.9) 0%,transparent 45%)}
+
+/* ─── HALAMAN (sistem layer) ─── */
+.page{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center}
+.page.show{display:flex}
+
+/* pg-world TRANSPARAN agar canvas Three.js di bawahnya terlihat */
+#pg-world{background:transparent !important;pointer-events:none}
+
+/* ══════════════════════════════
+   HALAMAN 1 — SELAMAT DATANG
+══════════════════════════════ */
+#pg-welcome{flex-direction:column;gap:0}
+
+.corner{position:fixed;width:50px;height:50px;z-index:20;opacity:.5}
+.corner.tl{top:18px;left:18px;border-top:2px solid var(--gold);border-left:2px solid var(--gold)}
+.corner.tr{top:18px;right:18px;border-top:2px solid var(--gold);border-right:2px solid var(--gold)}
+
+.hud-bl{position:fixed;bottom:20px;left:24px;z-index:20;font-size:.62rem;
+  color:rgba(56,189,248,.6);letter-spacing:.12em;line-height:2}
+.hud-br{position:fixed;bottom:20px;right:24px;z-index:20;text-align:right;
+  font-family:'Orbitron',sans-serif;font-size:.58rem;
+  color:rgba(245,197,24,.5);letter-spacing:.1em;line-height:1.8}
+
+.badge{display:flex;align-items:center;gap:14px;margin-bottom:16px;
+  animation:fadeDown .9s ease both}
+.badge-icon{width:60px;height:60px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#ffe066,#d97706);
+  border:3px solid var(--gold-light);font-size:26px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 28px var(--glow);animation:pulseGlow 3s ease-in-out infinite}
+.badge-school{font-family:'Orbitron',sans-serif;font-size:clamp(.7rem,2vw,.95rem);
+  font-weight:700;color:var(--gold-light);letter-spacing:.15em;
+  text-shadow:0 0 12px var(--glow)}
+.badge-loc{font-size:clamp(.6rem,1.5vw,.75rem);color:rgba(240,249,255,.55);letter-spacing:.08em}
+
+.main-title{font-family:'Orbitron',sans-serif;font-weight:900;text-align:center;
+  font-size:clamp(1.4rem,5vw,3.6rem);line-height:1.15;color:#fff;
+  text-shadow:0 0 20px var(--gold),0 0 50px rgba(245,197,24,.35),2px 2px 0 rgba(0,0,0,.6);
+  animation:fadeUp .9s .3s ease both;max-width:900px;padding:0 20px}
+.main-title span{color:var(--gold-light);display:block}
+
+.sub-title{margin-top:10px;font-size:clamp(.8rem,2vw,1.1rem);color:rgba(125,211,252,.9);
+  letter-spacing:.25em;text-transform:uppercase;text-align:center;
+  text-shadow:0 0 14px rgba(56,189,248,.6);animation:fadeUp .9s .55s ease both}
+
+.divider{margin:22px auto;width:min(400px,80vw);height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),var(--sky),var(--gold),transparent);
+  box-shadow:0 0 10px var(--glow);animation:fadeUp .9s .7s ease both}
+
+.info-strip{display:flex;gap:clamp(16px,4vw,48px);margin-bottom:32px;
+  animation:fadeUp .9s .85s ease both}
+.info-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.info-num{font-family:'Orbitron',sans-serif;font-size:clamp(1.1rem,3vw,1.9rem);
+  font-weight:700;color:var(--gold-light);text-shadow:0 0 10px var(--glow)}
+.info-lbl{font-size:clamp(.58rem,1.5vw,.72rem);color:rgba(240,249,255,.45);
+  letter-spacing:.1em;text-transform:uppercase}
+
+.btn-mulai{position:relative;display:inline-flex;align-items:center;gap:12px;
+  padding:17px 54px;font-family:'Orbitron',sans-serif;
+  font-size:clamp(.95rem,2.5vw,1.25rem);font-weight:700;letter-spacing:.18em;
+  color:#000;cursor:pointer;border:none;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold),#d97706);
+  box-shadow:0 0 32px var(--glow),0 0 64px rgba(245,197,24,.22),inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .2s,box-shadow .2s,filter .2s;
+  animation:fadeUp .9s 1s ease both}
+.btn-mulai::before{content:'';position:absolute;inset:-3px;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold-light),var(--sky),var(--gold));
+  z-index:-1;filter:blur(8px);opacity:.65;animation:spinBorder 4s linear infinite}
+.btn-mulai:hover{transform:scale(1.07) translateY(-3px);filter:brightness(1.1);
+  box-shadow:0 0 48px rgba(245,197,24,.8),0 0 96px rgba(245,197,24,.3),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn-mulai:active{transform:scale(1.02)}
+.arrow{width:22px;height:22px;border-right:3px solid #000;border-top:3px solid #000;
+  transform:rotate(45deg);transition:transform .2s}
+.btn-mulai:hover .arrow{transform:rotate(45deg) translate(4px,-4px)}
+
+/* ══════════════════════════════
+   HALAMAN 2 — LOGIN
+══════════════════════════════ */
+#pg-login{background:rgba(0,8,20,.95);backdrop-filter:blur(14px)}
+
+.login-box{background:linear-gradient(135deg,rgba(0,20,50,.92),rgba(0,8,20,.97));
+  border:1px solid rgba(245,197,24,.3);border-radius:20px;
+  padding:clamp(28px,5vw,52px);width:min(420px,92vw);position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(245,197,24,.12),0 20px 60px rgba(0,0,0,.6)}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),var(--sky),var(--gold),transparent)}
+
+.login-head{text-align:center;margin-bottom:26px}
+.login-head .ico{font-size:46px;display:block;margin-bottom:8px}
+.login-head h2{font-family:'Orbitron',sans-serif;font-size:1.05rem;
+  color:var(--gold-light);letter-spacing:.12em;text-shadow:0 0 10px var(--glow)}
+.login-head p{font-size:.72rem;color:rgba(240,249,255,.4);letter-spacing:.08em;margin-top:4px}
+
+.form-grp{margin-bottom:16px}
+.form-grp label{display:block;font-size:.7rem;color:rgba(125,211,252,.7);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:7px}
+.form-grp input{width:100%;padding:12px 15px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(245,197,24,.22);
+  border-radius:10px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:1rem;
+  outline:none;transition:border-color .2s,box-shadow .2s}
+.form-grp input:focus{border-color:var(--gold);box-shadow:0 0 12px rgba(245,197,24,.22)}
+.form-grp input::placeholder{color:rgba(255,255,255,.18)}
+.input-err{border-color:#ef4444 !important;box-shadow:0 0 10px rgba(239,68,68,.35) !important}
+
+.btn-login{width:100%;padding:14px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold-light),var(--gold),#d97706);
+  color:#000;font-family:'Orbitron',sans-serif;font-size:.9rem;font-weight:700;
+  letter-spacing:.12em;cursor:pointer;margin-top:6px;
+  box-shadow:0 0 20px rgba(245,197,24,.32);transition:transform .2s,box-shadow .2s}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(245,197,24,.52)}
+.btn-login:active{transform:none}
+
+.msg-err{color:#fca5a5;font-size:.75rem;text-align:center;margin-top:10px;
+  min-height:18px;letter-spacing:.05em}
+
+.btn-back-login{display:block;text-align:center;margin-top:14px;
+  font-size:.78rem;color:rgba(240,249,255,.3);cursor:pointer;
+  background:none;border:none;width:100%;letter-spacing:.1em;
+  transition:color .2s}
+.btn-back-login:hover{color:rgba(125,211,252,.7)}
+
+/* ══════════════════════════════
+   HALAMAN 3 — LOADING
+══════════════════════════════ */
+#pg-loading{flex-direction:column;gap:18px;background:#000814}
+
+.ld-title{font-family:'Orbitron',sans-serif;font-size:clamp(1rem,3vw,1.7rem);
+  color:var(--gold-light);letter-spacing:.2em;text-shadow:0 0 20px var(--glow);text-align:center}
+.ld-ico{font-size:3rem;animation:spin 4s linear infinite}
+.ld-bar-wrap{width:min(360px,78vw);height:6px;background:rgba(255,255,255,.07);
+  border-radius:999px;overflow:hidden;border:1px solid rgba(245,197,24,.18)}
+.ld-bar{height:100%;width:0%;background:linear-gradient(to right,var(--gold),var(--sky));
+  border-radius:999px;box-shadow:0 0 10px var(--glow);transition:width .15s ease}
+.ld-status{font-size:.68rem;color:rgba(125,211,252,.6);letter-spacing:.15em;
+  font-family:'Orbitron',sans-serif;text-align:center}
+.ld-pct{font-family:'Orbitron',sans-serif;font-size:.8rem;color:rgba(245,197,24,.7)}
+
+/* ══════════════════════════════
+   HALAMAN 4 — DUNIA 3D
+══════════════════════════════ */
+/* #pg-world sudah diatur transparan di atas */
+#pg-world{flex-direction:column;align-items:stretch;justify-content:flex-start}
+
+/* Elemen interaktif di world tetap bisa diklik */
+#pg-world .world-nav,
+#pg-world .city-panel,
+#pg-world .loc-popup{pointer-events:auto}
+
+/* Navbar */
+.world-nav{position:absolute;top:0;left:0;right:0;z-index:30;height:54px;
+  background:linear-gradient(to bottom,rgba(0,8,20,.88),transparent);
+  display:flex;align-items:center;justify-content:space-between;padding:0 22px;
+  border-bottom:1px solid rgba(245,197,24,.1)}
+.nav-logo{font-family:'Orbitron',sans-serif;font-size:.82rem;color:var(--gold-light);
+  letter-spacing:.15em;text-shadow:0 0 10px var(--glow);display:flex;align-items:center;gap:9px}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-avatar{width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-light),#d97706);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  border:2px solid rgba(245,197,24,.35);box-shadow:0 0 8px rgba(245,197,24,.25)}
+.nav-uname{font-size:.78rem;color:rgba(240,249,255,.65);letter-spacing:.07em;
+  max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-out{padding:5px 13px;border:1px solid rgba(245,197,24,.28);border-radius:999px;
+  background:transparent;color:rgba(245,197,24,.65);font-family:'Rajdhani',sans-serif;
+  font-size:.7rem;letter-spacing:.1em;cursor:pointer;transition:all .2s}
+.btn-out:hover{background:rgba(245,197,24,.1);color:var(--gold-light);border-color:var(--gold)}
+
+/* Sambutan setelah login */
+.world-welcome{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:20;text-align:center;pointer-events:none}
+.world-welcome h2{font-family:'Orbitron',sans-serif;font-size:clamp(1.2rem,3.5vw,2.2rem);
+  color:#fff;text-shadow:0 0 20px var(--gold),0 0 40px rgba(245,197,24,.3);
+  letter-spacing:.12em;margin-bottom:8px}
+.world-welcome p{font-size:clamp(.75rem,1.8vw,.95rem);color:rgba(125,211,252,.7);
+  letter-spacing:.15em;text-transform:uppercase}
+
+/* Panel kartu lokasi */
+.city-panel{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:30;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 14px}
+.city-card{background:rgba(0,8,20,.78);border:1px solid rgba(245,197,24,.22);
+  border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:9px;
+  cursor:pointer;transition:all .22s;backdrop-filter:blur(8px);min-width:120px}
+.city-card:hover{border-color:var(--gold);background:rgba(245,197,24,.07);
+  transform:translateY(-3px);box-shadow:0 8px 24px rgba(245,197,24,.14)}
+.cc-icon{font-size:1.25rem}
+.cc-name{font-family:'Orbitron',sans-serif;font-size:.6rem;color:var(--gold-light);letter-spacing:.1em}
+.cc-desc{font-size:.62rem;color:rgba(240,249,255,.38);letter-spacing:.05em}
+
+/* Popup lokasi */
+.loc-popup{position:absolute;top:68px;left:50%;transform:translateX(-50%);
+  z-index:40;background:rgba(0,8,20,.92);border:1px solid rgba(56,189,248,.35);
+  border-radius:12px;padding:14px 22px;text-align:center;backdrop-filter:blur(10px);
+  box-shadow:0 0 28px rgba(56,189,248,.1);display:none;animation:fadeDown .35s ease both;
+  min-width:260px;max-width:90vw}
+.loc-popup.show{display:block}
+.loc-popup h3{font-family:'Orbitron',sans-serif;font-size:.88rem;color:var(--sky);
+  letter-spacing:.12em;margin-bottom:7px}
+.loc-popup p{font-size:.74rem;color:rgba(240,249,255,.55);line-height:1.65}
+.loc-close{position:absolute;top:7px;right:11px;background:none;border:none;
+  color:rgba(255,255,255,.35);cursor:pointer;font-size:1rem;transition:color .2s}
+.loc-close:hover{color:rgba(255,255,255,.7)}
+
+/* ─── Keyframes ─── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-24px) translateX(-50%)}
+  to{opacity:1;transform:translateY(0) translateX(-50%)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 24px var(--glow)}50%{box-shadow:0 0 44px var(--glow),0 0 80px rgba(245,197,24,.35)}}
+@keyframes spinBorder{from{filter:blur(8px) hue-rotate(0deg)}to{filter:blur(8px) hue-rotate(360deg)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+.dot-green{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 1.5s infinite;
+  margin-right:6px}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="overlay"></div>
+
+<!-- Dekor sudut (selalu tampil) -->
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="hud-bl">
+  <div><span class="dot-green"></span>SISTEM AKTIF</div>
+  <div>◈ MANGGARAI BARAT — NTT</div>
+  <div>◈ DUNIA 3D INTERAKTIF v2.0</div>
+</div>
+<div class="hud-br">
+  <div>8°31′S / 120°01′E</div>
+  <div>ALT: 650 M · FLORES</div>
+</div>
+
+<!-- ═══════════════════════
+     HALAMAN 1: SELAMAT DATANG
+═══════════════════════ -->
+<div class="page show" id="pg-welcome">
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="badge">
+      <div class="badge-icon">🏫</div>
+      <div>
+        <div class="badge-school">SMKN 1 KUWUS</div>
+        <div class="badge-loc">Manggarai Barat · Nusa Tenggara Timur · Indonesia</div>
+      </div>
+    </div>
+
+    <h1 class="main-title">
+      Selamat Datang di
+      <span>Kota 3D SMKN 1 Kuwus</span>
+    </h1>
+
+    <p class="sub-title">✦ Dunia Virtual Interaktif ✦</p>
+    <div class="divider"></div>
+
+    <div class="info-strip">
+      <div class="info-item"><span class="info-num">3D</span><span class="info-lbl">Visual</span></div>
+      <div class="info-item"><span class="info-num">SMK</span><span class="info-lbl">Vokasi</span></div>
+      <div class="info-item"><span class="info-num">NTT</span><span class="info-lbl">Flores</span></div>
+    </div>
+
+    <button class="btn-mulai" onclick="goTo('pg-welcome','pg-login')">
+      MULAI <div class="arrow"></div>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════
+     HALAMAN 2: LOGIN
+═══════════════════════ -->
+<div class="page" id="pg-login">
+  <div class="login-box">
+    <div class="login-head">
+      <span class="ico">🔐</span>
+      <h2>PORTAL MASUK</h2>
+      <p>SMKN 1 Kuwus — Dunia 3D Interaktif</p>
+    </div>
+
+    <form id="login-form" onsubmit="doLogin(event)">
+      <div class="form-grp">
+        <label>Nama Pengguna</label>
+        <input type="text" id="inp-user" placeholder="Masukkan nama pengguna..." autocomplete="username"/>
+      </div>
+      <div class="form-grp">
+        <label>Kata Sandi</label>
+        <input type="password" id="inp-pass" placeholder="Masukkan kata sandi..." autocomplete="current-password"/>
+      </div>
+      <div class="msg-err" id="err-msg"></div>
+      <button type="submit" class="btn-login">MASUK KE DUNIA 3D ➤</button>
+    </form>
+
+    <button class="btn-back-login" onclick="goTo('pg-login','pg-welcome')">← Kembali ke Halaman Utama</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════
+     HALAMAN 3: LOADING
+═══════════════════════ -->
+<div class="page" id="pg-loading">
+  <div class="ld-title">⚙ MEMUAT DUNIA 3D</div>
+  <div class="ld-ico">🏙</div>
+  <div class="ld-bar-wrap"><div class="ld-bar" id="ld-bar"></div></div>
+  <div class="ld-pct" id="ld-pct">0%</div>
+  <div class="ld-status" id="ld-status">Menginisialisasi sistem...</div>
+</div>
+
+<!-- ═══════════════════════
+     HALAMAN 4: DUNIA 3D
+═══════════════════════ -->
+<div class="page" id="pg-world">
+
+  <!-- Navbar -->
+  <div class="world-nav">
+    <div class="nav-logo">🏙 KOTA 3D SMKN 1 KUWUS</div>
+    <div class="nav-right">
+      <div class="nav-avatar">👤</div>
+      <span class="nav-uname" id="show-user">Pengguna</span>
+      <button class="btn-out" onclick="doLogout()">⏻ Keluar</button>
+    </div>
+  </div>
+
+  <!-- Sambutan tengah -->
+  <div class="world-welcome">
+    <h2 id="greet-text">Selamat Datang! 👋</h2>
+    <p>Jelajahi Kota Virtual SMKN 1 Kuwus</p>
+  </div>
+
+  <!-- Popup lokasi -->
+  <div class="loc-popup" id="loc-popup">
+    <button class="loc-close" onclick="closePopup()">✕</button>
+    <h3 id="loc-title">Lokasi</h3>
+    <p id="loc-desc">Deskripsi</p>
+  </div>
+
+  <!-- Kartu lokasi -->
+  <div class="city-panel">
+    <div class="city-card" onclick="openLoc('Gedung Utama','Gedung sekolah utama SMKN 1 Kuwus 3 lantai. Pusat kegiatan belajar mengajar jurusan Teknik dan Pertanian Flores.')">
+      <div class="cc-icon">🏫</div>
+      <div><div class="cc-name">GEDUNG UTAMA</div><div class="cc-desc">Blok A &amp; B</div></div>
+    </div>
+    <div class="city-card" onclick="openLoc('Laboratorium Komputer','Lab komputer 30 unit PC. Digunakan untuk pelajaran KIK, Informatika, dan TKJ di SMKN 1 Kuwus.')">
+      <div class="cc-icon">💻</div>
+      <div><div class="cc-name">LAB KOMPUTER</div><div class="cc-desc">TKJ &amp; KIK</div></div>
+    </div>
+    <div class="city-card" onclick="openLoc('Area Pertanian','Lahan praktik ATPH 2 hektar. Siswa belajar budidaya tanaman pangan dan hortikultura khas Flores NTT.')">
+      <div class="cc-icon">🌿</div>
+      <div><div class="cc-name">AREA PERTANIAN</div><div class="cc-desc">ATPH &amp; KKA</div></div>
+    </div>
+    <div class="city-card" onclick="openLoc('Aula Sekolah','Aula serbaguna untuk upacara, seminar, dan pertunjukan seni budaya Manggarai Barat.')">
+      <div class="cc-icon">🎭</div>
+      <div><div class="cc-name">AULA</div><div class="cc-desc">Serbaguna</div></div>
+    </div>
+    <div class="city-card" onclick="openLoc('Perpustakaan','Perpustakaan digital dengan koleksi buku pelajaran, modul kejuruan, dan akses internet untuk siswa.')">
+      <div class="cc-icon">📚</div>
+      <div><div class="cc-name">PERPUSTAKAAN</div><div class="cc-desc">Digital &amp; Fisik</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Three.js -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   NAVIGASI HALAMAN
+═══════════════════════════════════════ */
+function goTo(from, to) {
+  document.getElementById(from).classList.remove('show');
+  document.getElementById(to).classList.add('show');
+  if (to === 'pg-login') {
+    setTimeout(() => document.getElementById('inp-user').focus(), 100);
+  }
+}
+
+const VALID_USER = 'setiawan.hari985@gmail.com';
+const VALID_PASS = 'admin50308202';
+
+function doLogin(e) {
+  e.preventDefault();
+  const user = document.getElementById('inp-user').value.trim();
+  const pass = document.getElementById('inp-pass').value;
+  const errEl = document.getElementById('err-msg');
+
+  errEl.textContent = '';
+  document.getElementById('inp-user').classList.remove('input-err');
+  document.getElementById('inp-pass').classList.remove('input-err');
+
+  if (!user) {
+    errEl.textContent = '⚠ Username tidak boleh kosong.';
+    document.getElementById('inp-user').classList.add('input-err');
+    document.getElementById('inp-user').focus();
+    return;
+  }
+  if (!pass) {
+    errEl.textContent = '⚠ Password tidak boleh kosong.';
+    document.getElementById('inp-pass').classList.add('input-err');
+    document.getElementById('inp-pass').focus();
+    return;
+  }
+  if (user !== VALID_USER || pass !== VALID_PASS) {
+    errEl.textContent = '⚠ Username atau password salah.';
+    document.getElementById('inp-user').classList.add('input-err');
+    document.getElementById('inp-pass').classList.add('input-err');
+    document.getElementById('inp-pass').value = '';
+    document.getElementById('inp-user').focus();
+    return;
+  }
+
+  // Kredensial benar — tampilkan loading lalu redirect
+  document.getElementById('pg-login').classList.remove('show');
+  document.getElementById('pg-loading').classList.add('show');
+  startLoading(user);
+}
+
+const ldMessages = [
+  'Menginisialisasi sistem...',
+  'Memuat aset dunia 3D...',
+  'Merender tekstur kota...',
+  'Menyalakan lampu jalanan...',
+  'Menghidupkan partikel...',
+  'Memuat data SMKN 1 Kuwus...',
+  'Membuka portal dunia 3D...',
+  'Siap! Mengalihkan halaman... ✓'
+];
+
+function startLoading(username) {
+  const bar    = document.getElementById('ld-bar');
+  const pct    = document.getElementById('ld-pct');
+  const status = document.getElementById('ld-status');
+  let progress = 0, msgIdx = 0;
+
+  bar.style.width = '0%';
+  pct.textContent = '0%';
+
+  const iv = setInterval(() => {
+    progress = Math.min(progress + Math.random() * 13 + 5, 100);
+    bar.style.width = progress + '%';
+    pct.textContent = Math.round(progress) + '%';
+    if (msgIdx < ldMessages.length) status.textContent = ldMessages[msgIdx++];
+
+    if (progress >= 100) {
+      clearInterval(iv);
+      status.textContent = ldMessages[ldMessages.length - 1];
+      setTimeout(() => {
+        document.getElementById('pg-loading').classList.remove('show');
+        enterWorld(username);
+      }, 900);
+    }
+  }, 230);
+}
+
+function enterWorld(username) {
+  window.location.href = 'https://kota3dsmkn1kuwus.vercel.app';
+}
+
+function doLogout() {
+  if (!confirm('Keluar dari Dunia 3D SMKN 1 Kuwus?')) return;
+  document.getElementById('pg-world').classList.remove('show');
+  document.getElementById('inp-user').value = '';
+  document.getElementById('inp-pass').value = '';
+  document.getElementById('err-msg').textContent = '';
+  document.getElementById('ld-bar').style.width = '0%';
+  document.getElementById('pg-welcome').classList.add('show');
+}
+
+function openLoc(title, desc) {
+  document.getElementById('loc-title').textContent = title;
+  document.getElementById('loc-desc').textContent = desc;
+  document.getElementById('loc-popup').classList.add('show');
+  clearTimeout(window._locT);
+  window._locT = setTimeout(closePopup, 7000);
+}
+
+function closePopup() {
+  document.getElementById('loc-popup').classList.remove('show');
+}
+
+/* ═══════════════════════════════════════
+   THREE.JS — SCENE KOTA 3D
+═══════════════════════════════════════ */
+(function () {
+  if (typeof THREE === 'undefined') return;
+
+  const canvas = document.getElementById('bg-canvas');
+  const W = window.innerWidth, H = window.innerHeight;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W, H);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000814);
+  scene.fog = new THREE.FogExp2(0x000c24, 0.018);
+
+  const camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 500);
+  camera.position.set(0, 12, 42);
+
+  // Cahaya
+  scene.add(new THREE.AmbientLight(0x0d1b3e, 3.5));
+  const sun = new THREE.DirectionalLight(0xfff4c2, 2.2);
+  sun.position.set(20, 40, 20);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.left = -60; sun.shadow.camera.right = 60;
+  sun.shadow.camera.top = 60;   sun.shadow.camera.bottom = -60;
+  sun.shadow.camera.far = 200;
+  scene.add(sun);
+  scene.add(Object.assign(new THREE.DirectionalLight(0x4488ff, 0.8), { position: new THREE.Vector3(-20, 10, -20) }));
+
+  [
+    { c: 0xf5c518, x: 0,   y: 8,  z: 0,  i: 3.5 },
+    { c: 0x38bdf8, x: -15, y: 6,  z: -5, i: 2.5 },
+    { c: 0x22c55e, x: 15,  y: 6,  z: -5, i: 2.5 },
+    { c: 0xe879f9, x: 5,   y: 10, z: 10, i: 2.0 },
+    { c: 0xfb923c, x: -8,  y: 5,  z: 12, i: 1.5 },
+  ].forEach(p => { const l = new THREE.PointLight(p.c, p.i, 50); l.position.set(p.x, p.y, p.z); scene.add(l); });
+
+  // Tanah
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(200, 200, 40, 40),
+    new THREE.MeshStandardMaterial({ color: 0x0a1628, roughness: 0.85, metalness: 0.15 })
+  );
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  const grid = new THREE.GridHelper(200, 40, 0x1a3a6a, 0x0d2040);
+  grid.position.y = 0.02; scene.add(grid);
+
+  // Gedung
+  function makeBuilding(x, z, w, d, h, color, emissive, emissiveI) {
+    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.5, metalness: 0.3, emissive: emissive || 0, emissiveIntensity: emissiveI || 0 });
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    mesh.position.set(x, h / 2, z); mesh.castShadow = true; mesh.receiveShadow = true; scene.add(mesh);
+    if (h > 3) {
+      const rows = Math.floor(h / 2.5), cols = Math.floor(w / 2.2);
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        if (Math.random() < 0.3) continue;
+        const warm = Math.random() > 0.5;
+        const wm = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.6),
+          new THREE.MeshStandardMaterial({ color: warm ? 0xfff8c0 : 0xa0d0ff, emissive: warm ? 0xffe840 : 0x4499ff, emissiveIntensity: 0.9 + Math.random() * 0.5 }));
+        wm.position.set(x + (-w / 2 + 1.2 + c * 2.2), 1.5 + r * 2.5, z + d / 2 + 0.01); scene.add(wm);
+      }
+    }
+  }
+
+  [
+    [0,-12,12,8,14,0x1a3f6e,0x2255aa,0.3],[0,-10,8,4,20,0x0f2a4a,0x1a4488,0.4],
+    [-18,-8,7,6,10,0x162d3a,0x0ea5e9,0.3],[-26,-10,6,5,16,0x0d2030,0x1e88e5,0.35],
+    [-13,-16,8,6,8,0x1a2a1a,0x22c55e,0.2],[-22,-18,5,4,12,0x1a1a2e,0x9333ea,0.3],
+    [18,-8,7,6,11,0x1e2a1a,0x4ade80,0.3],[26,-10,6,5,15,0x2a1a1a,0xfb923c,0.35],
+    [13,-16,8,6,9,0x1f1a2e,0xa855f7,0.25],[24,-18,5,4,13,0x1a2628,0x38bdf8,0.3],
+    [-35,-22,8,6,7,0x0d1a2a,0x0ea5e9,0.2],[35,-22,8,6,7,0x0d1a2a,0xf59e0b,0.2],
+    [0,-28,10,6,6,0x0d1a0d,0x22c55e,0.2],[-8,2,4,3,5,0x1a1a2a,0x818cf8,0.3],
+    [8,2,4,3,5,0x2a1a18,0xfb923c,0.3],
+  ].forEach(b => makeBuilding(...b));
+
+  // Menara antena
+  const towerLights = [];
+  [-3, 3].forEach(x => {
+    const t = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 18, 8),
+      new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8, roughness: 0.3 }));
+    t.position.set(x, 9, -12); t.castShadow = true; scene.add(t);
+    const l = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8),
+      new THREE.MeshStandardMaterial({ color: 0xff2222, emissive: 0xff0000, emissiveIntensity: 2 }));
+    l.position.set(x, 18.5, -12); scene.add(l); towerLights.push(l);
+  });
+
+  // Pohon palem
+  [[-6,4],[6,4],[-10,0],[10,0],[-4,8],[4,8],[-14,-4],[14,-4]].forEach(([px, pz]) => {
+    const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.25, 4, 6),
+      new THREE.MeshStandardMaterial({ color: 0x5d3a1a, roughness: 0.9 }));
+    trunk.position.set(px, 2, pz); trunk.castShadow = true; scene.add(trunk);
+    const leafGeo = new THREE.SphereGeometry(1.2, 8, 6);
+    leafGeo.scale(1, 0.5, 1);
+    const leaf = new THREE.Mesh(leafGeo, new THREE.MeshStandardMaterial({ color: 0x166534, roughness: 0.8, emissive: 0x14532d, emissiveIntensity: 0.2 }));
+    leaf.position.set(px, 4.4, pz); leaf.castShadow = true; scene.add(leaf);
+  });
+
+  // Jalan
+  [[0,0,4,60],[0,-4,80,4]].forEach(([x,z,w,d]) => {
+    const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d),
+      new THREE.MeshStandardMaterial({ color: 0x1c1c2e, roughness: 0.95 }));
+    r.rotation.x = -Math.PI / 2; r.position.set(x, 0.03, z); r.receiveShadow = true; scene.add(r);
+  });
+
+  // Bintang
+  const starN = 2200;
+  const sPos = new Float32Array(starN * 3), sCol = new Float32Array(starN * 3);
+  const sPalette = [[1,.98,.9],[.6,.8,1],[1,.95,.5],[.7,1,.8]];
+  for (let i = 0; i < starN; i++) {
+    const th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1), r = 120 + Math.random() * 80;
+    sPos[i*3] = r*Math.sin(ph)*Math.cos(th); sPos[i*3+1] = Math.abs(r*Math.cos(ph))*.6+10; sPos[i*3+2] = r*Math.sin(ph)*Math.sin(th);
+    const sc = sPalette[i % sPalette.length]; sCol[i*3]=sc[0]; sCol[i*3+1]=sc[1]; sCol[i*3+2]=sc[2];
+  }
+  const starGeo = new THREE.BufferGeometry();
+  starGeo.setAttribute('position', new THREE.BufferAttribute(sPos, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(sCol, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.45, vertexColors: true, transparent: true, opacity: 0.92, sizeAttenuation: true })));
+
+  // Partikel debu emas
+  const dN = 400, dPos = new Float32Array(dN * 3);
+  for (let i = 0; i < dN; i++) { dPos[i*3]=(Math.random()-.5)*60; dPos[i*3+1]=Math.random()*20; dPos[i*3+2]=(Math.random()-.5)*60; }
+  const dustGeo = new THREE.BufferGeometry(); dustGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+  const dustPts = new THREE.Points(dustGeo, new THREE.PointsMaterial({ size: 0.18, color: 0xffd700, transparent: true, opacity: 0.5 })); scene.add(dustPts);
+
+  // Bulan
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(5, 32, 32),
+    new THREE.MeshStandardMaterial({ color: 0xfff9e0, emissive: 0xffe8a0, emissiveIntensity: 0.4, roughness: 0.7 }));
+  moon.position.set(-60, 55, -100); scene.add(moon);
+  const halo = new THREE.Mesh(new THREE.RingGeometry(6, 10, 32),
+    new THREE.MeshBasicMaterial({ color: 0xfff4c2, transparent: true, opacity: 0.08, side: THREE.DoubleSide }));
+  halo.position.copy(moon.position); scene.add(halo);
+
+  // Animasi
+  let t = 0;
+  const R = 42;
+  (function animate() {
+    requestAnimationFrame(animate);
+    t += 0.004;
+    camera.position.x = Math.sin(t * 0.12) * R;
+    camera.position.z = Math.cos(t * 0.12) * R;
+    camera.position.y = 12 + Math.sin(t * 0.3) * 1.5;
+    camera.lookAt(0, 3, -6);
+
+    const blink = Math.sin(t * 6) > 0.5 ? 2.5 : 0.1;
+    towerLights.forEach(l => l.material.emissiveIntensity = blink);
+
+    const dp = dustGeo.attributes.position;
+    for (let i = 0; i < dN; i++) { dp.array[i*3+1] += 0.012; if (dp.array[i*3+1] > 20) dp.array[i*3+1] = 0; }
+    dp.needsUpdate = true;
+
+    scene.rotation.y = t * 0.005;
+    halo.lookAt(camera.position);
+    renderer.render(scene, camera);
+  })();
+
+  window.addEventListener('resize', () => {
+    const nw = window.innerWidth, nh = window.innerHeight;
+    renderer.setSize(nw, nh); camera.aspect = nw / nh; camera.updateProjectionMatrix();
+  });
+})();
+</script>
+</body>
+</html>
