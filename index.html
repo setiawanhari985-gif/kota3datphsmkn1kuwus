@@ -50413,140 +50413,307 @@ https://github.com/nodeca/pako/blob/main/LICENSE
         ═══════════════════════════════════════ -->
         <div id="welcome-gate" style="
             position:fixed;inset:0;z-index:19999;
-            background:#000814;
+            background:#1a0a00;
             display:flex;flex-direction:column;align-items:center;justify-content:center;
             font-family:'Orbitron','Rajdhani',ui-sans-serif,sans-serif;
             overflow:hidden;
         ">
-            <!-- Import font -->
             <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap"/>
 
-            <!-- Canvas bintang -->
+            <!-- Canvas latar: langit Flores + bukit + bintang -->
             <canvas id="wg-canvas" style="position:absolute;inset:0;z-index:0"></canvas>
 
-            <!-- Overlay gradien bawah -->
+            <!-- Overlay gradien bawah gelap -->
             <div style="position:absolute;inset:0;z-index:1;pointer-events:none;
-                background:radial-gradient(ellipse at 50% 110%,rgba(0,20,50,.85) 0%,transparent 70%),
-                           linear-gradient(to top,rgba(0,8,20,.95) 0%,transparent 50%)"></div>
+                background:linear-gradient(to top,rgba(20,5,0,.97) 0%,rgba(20,5,0,.5) 40%,transparent 100%)"></div>
 
-            <!-- Dekor sudut -->
-            <div style="position:fixed;top:18px;left:18px;width:50px;height:50px;border-top:2px solid #f5c518;border-left:2px solid #f5c518;opacity:.5;z-index:10"></div>
-            <div style="position:fixed;top:18px;right:18px;width:50px;height:50px;border-top:2px solid #f5c518;border-right:2px solid #f5c518;opacity:.5;z-index:10"></div>
+            <!-- Pita motif Songke atas -->
+            <div style="position:fixed;top:0;left:0;right:0;height:8px;z-index:20;
+                background:repeating-linear-gradient(90deg,
+                    #c0392b 0px,#c0392b 16px,
+                    #f5c518 16px,#f5c518 24px,
+                    #1a0a00 24px,#1a0a00 32px,
+                    #f5c518 32px,#f5c518 40px,
+                    #c0392b 40px,#c0392b 56px,
+                    #8B4513 56px,#8B4513 64px
+                )"></div>
+
+            <!-- Pita motif Songke bawah -->
+            <div style="position:fixed;bottom:0;left:0;right:0;height:8px;z-index:20;
+                background:repeating-linear-gradient(90deg,
+                    #c0392b 0px,#c0392b 16px,
+                    #f5c518 16px,#f5c518 24px,
+                    #1a0a00 24px,#1a0a00 32px,
+                    #f5c518 32px,#f5c518 40px,
+                    #c0392b 40px,#c0392b 56px,
+                    #8B4513 56px,#8B4513 64px
+                )"></div>
+
+            <!-- Dekor sudut ornamen Manggarai -->
+            <div style="position:fixed;top:18px;left:18px;width:56px;height:56px;z-index:20;opacity:.7">
+                <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 2 L22 2 L2 22" stroke="#f5c518" stroke-width="2.5" fill="none"/>
+                    <path d="M2 2 L14 14" stroke="#c0392b" stroke-width="1.5" fill="none"/>
+                    <rect x="2" y="2" width="8" height="8" fill="none" stroke="#f5c518" stroke-width="1"/>
+                </svg>
+            </div>
+            <div style="position:fixed;top:18px;right:18px;width:56px;height:56px;z-index:20;opacity:.7">
+                <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M54 2 L34 2 L54 22" stroke="#f5c518" stroke-width="2.5" fill="none"/>
+                    <path d="M54 2 L42 14" stroke="#c0392b" stroke-width="1.5" fill="none"/>
+                    <rect x="46" y="2" width="8" height="8" fill="none" stroke="#f5c518" stroke-width="1"/>
+                </svg>
+            </div>
 
             <!-- HUD kiri bawah -->
-            <div style="position:fixed;bottom:20px;left:24px;z-index:10;font-size:.6rem;color:rgba(56,189,248,.6);letter-spacing:.12em;line-height:2;font-family:monospace">
-                <div><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;margin-right:6px;animation:wg-blink 1.5s infinite"></span>SISTEM AKTIF</div>
+            <div style="position:fixed;bottom:16px;left:20px;z-index:20;font-size:.6rem;
+                color:rgba(245,197,24,.7);letter-spacing:.12em;line-height:2;font-family:monospace">
+                <div><span style="display:inline-block;width:7px;height:7px;border-radius:50%;
+                    background:#c0392b;box-shadow:0 0 6px #c0392b;margin-right:6px;
+                    animation:wg-blink 1.5s infinite"></span>SISTEM AKTIF</div>
                 <div>◈ MANGGARAI BARAT — NTT</div>
-                <div>◈ DUNIA 3D INTERAKTIF v2.0</div>
+                <div>◈ DUNIA 3D SMKN 1 KUWUS</div>
             </div>
 
             <!-- HUD kanan bawah -->
-            <div style="position:fixed;bottom:20px;right:24px;z-index:10;text-align:right;font-size:.58rem;color:rgba(245,197,24,.5);letter-spacing:.1em;line-height:1.8;font-family:monospace">
+            <div style="position:fixed;bottom:16px;right:20px;z-index:20;text-align:right;
+                font-size:.58rem;color:rgba(245,197,24,.55);letter-spacing:.1em;line-height:1.9;font-family:monospace">
                 <div>8°31′S / 120°01′E</div>
-                <div>ALT: 650 M · FLORES</div>
+                <div>FLORES · KOMODO · NTT</div>
             </div>
 
             <!-- Konten utama -->
-            <div style="position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 20px">
+            <div style="position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 20px;gap:0">
 
-                <!-- Badge -->
-                <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;animation:wg-fadeDown .9s ease both">
-                    <div style="width:60px;height:60px;border-radius:50%;
-                        background:radial-gradient(circle at 35% 35%,#ffe066,#d97706);
-                        border:3px solid #ffe066;font-size:26px;
+                <!-- Badge dengan ornamen Mbaru Niang -->
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;animation:wg-fadeDown .9s ease both">
+                    <!-- Ikon rumah adat Mbaru Niang -->
+                    <div style="width:64px;height:64px;border-radius:50%;
+                        background:radial-gradient(circle at 35% 35%,#e67e22,#8B1a00);
+                        border:3px solid #f5c518;font-size:28px;
                         display:flex;align-items:center;justify-content:center;
-                        box-shadow:0 0 28px rgba(245,197,24,.55);
-                        animation:wg-pulse 3s ease-in-out infinite">🏫</div>
+                        box-shadow:0 0 28px rgba(192,57,43,.7),0 0 60px rgba(245,197,24,.2);
+                        animation:wg-pulse 3s ease-in-out infinite">🏯</div>
                     <div style="text-align:left">
-                        <div style="font-family:'Orbitron',sans-serif;font-size:clamp(.7rem,2vw,.95rem);font-weight:700;color:#ffe066;letter-spacing:.15em;text-shadow:0 0 12px rgba(245,197,24,.55)">SMKN 1 KUWUS</div>
-                        <div style="font-size:clamp(.6rem,1.5vw,.75rem);color:rgba(240,249,255,.55);letter-spacing:.08em">Manggarai Barat · Nusa Tenggara Timur · Indonesia</div>
+                        <div style="font-family:'Orbitron',sans-serif;font-size:clamp(.7rem,2vw,.95rem);
+                            font-weight:700;color:#f5c518;letter-spacing:.15em;
+                            text-shadow:0 0 14px rgba(245,197,24,.7)">SMKN 1 KUWUS</div>
+                        <div style="font-size:clamp(.58rem,1.4vw,.72rem);color:rgba(245,220,180,.55);letter-spacing:.08em">
+                            Manggarai Barat · Nusa Tenggara Timur · Indonesia</div>
                     </div>
                 </div>
 
-                <!-- Judul -->
-                <h1 style="font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(1.6rem,5.5vw,3.8rem);
-                    line-height:1.15;color:#fff;margin:0;
-                    text-shadow:0 0 20px #f5c518,0 0 50px rgba(245,197,24,.35),2px 2px 0 rgba(0,0,0,.6);
-                    animation:wg-fadeUp .9s .3s ease both;max-width:900px">
-                    Selamat Datang di<br>
-                    <span style="color:#ffe066">Kota 3D SMKN 1 Kuwus</span>
+                <!-- Judul dengan warna tanah Flores -->
+                <h1 style="font-family:'Orbitron',sans-serif;font-weight:900;
+                    font-size:clamp(1.5rem,5.5vw,3.6rem);
+                    line-height:1.15;margin:0;max-width:900px;
+                    animation:wg-fadeUp .9s .3s ease both">
+                    <span style="color:#fff;
+                        text-shadow:0 0 20px rgba(192,57,43,.8),2px 2px 0 rgba(0,0,0,.8)">Selamat Datang di</span><br>
+                    <span style="color:#f5c518;
+                        text-shadow:0 0 25px rgba(245,197,24,.7),0 0 50px rgba(192,57,43,.4),2px 2px 0 rgba(0,0,0,.8)">
+                        Kota 3D SMKN 1 Kuwus</span>
                 </h1>
 
-                <!-- Tagline -->
-                <p style="margin-top:12px;font-size:clamp(.8rem,2vw,1.1rem);color:rgba(125,211,252,.9);
-                    letter-spacing:.25em;text-transform:uppercase;
-                    text-shadow:0 0 14px rgba(56,189,248,.6);
-                    animation:wg-fadeUp .9s .55s ease both">✦ DUNIA VIRTUAL INTERAKTIF ✦</p>
+                <!-- Tagline motif Songke -->
+                <p style="margin-top:12px;font-size:clamp(.75rem,1.8vw,1rem);
+                    color:rgba(245,197,24,.85);letter-spacing:.22em;text-transform:uppercase;
+                    text-shadow:0 0 12px rgba(192,57,43,.6);
+                    animation:wg-fadeUp .9s .55s ease both">
+                    ✦ TOING MANGGARAI · FLORES · NTT ✦
+                </p>
 
-                <!-- Garis -->
-                <div style="margin:22px auto;width:min(400px,80vw);height:2px;
-                    background:linear-gradient(to right,transparent,#f5c518,#38bdf8,#f5c518,transparent);
-                    box-shadow:0 0 10px rgba(245,197,24,.55);
-                    animation:wg-fadeUp .9s .7s ease both"></div>
+                <!-- Garis ornamen tenun -->
+                <div style="margin:20px auto;width:min(440px,85vw);display:flex;align-items:center;gap:10px;
+                    animation:wg-fadeUp .9s .7s ease both">
+                    <div style="flex:1;height:2px;background:linear-gradient(to right,transparent,#c0392b,#f5c518)"></div>
+                    <span style="color:#f5c518;font-size:1rem">◆</span>
+                    <div style="flex:1;height:2px;background:linear-gradient(to left,transparent,#c0392b,#f5c518)"></div>
+                </div>
 
-                <!-- Info strip -->
-                <div style="display:flex;gap:clamp(16px,4vw,48px);margin-bottom:34px;animation:wg-fadeUp .9s .85s ease both">
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(1.1rem,3vw,1.9rem);font-weight:700;color:#ffe066;text-shadow:0 0 10px rgba(245,197,24,.55)">3D</span>
-                        <span style="font-size:.7rem;color:rgba(240,249,255,.45);letter-spacing:.1em;text-transform:uppercase">VISUAL</span>
+                <!-- Info strip: budaya lokal -->
+                <div style="display:flex;gap:clamp(14px,4vw,44px);margin-bottom:32px;
+                    animation:wg-fadeUp .9s .85s ease both">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+                        <span style="font-size:1.6rem">🏯</span>
+                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(.9rem,2.5vw,1.5rem);
+                            font-weight:700;color:#f5c518;text-shadow:0 0 10px rgba(245,197,24,.6)">MBARU</span>
+                        <span style="font-size:.62rem;color:rgba(245,220,180,.45);letter-spacing:.1em;text-transform:uppercase">NIANG</span>
                     </div>
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(1.1rem,3vw,1.9rem);font-weight:700;color:#ffe066;text-shadow:0 0 10px rgba(245,197,24,.55)">SMK</span>
-                        <span style="font-size:.7rem;color:rgba(240,249,255,.45);letter-spacing:.1em;text-transform:uppercase">VOKASI</span>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+                        <span style="font-size:1.6rem">🧵</span>
+                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(.9rem,2.5vw,1.5rem);
+                            font-weight:700;color:#f5c518;text-shadow:0 0 10px rgba(245,197,24,.6)">SONGKE</span>
+                        <span style="font-size:.62rem;color:rgba(245,220,180,.45);letter-spacing:.1em;text-transform:uppercase">TENUN</span>
                     </div>
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
-                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(1.1rem,3vw,1.9rem);font-weight:700;color:#ffe066;text-shadow:0 0 10px rgba(245,197,24,.55)">NTT</span>
-                        <span style="font-size:.7rem;color:rgba(240,249,255,.45);letter-spacing:.1em;text-transform:uppercase">FLORES</span>
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+                        <span style="font-size:1.6rem">🦎</span>
+                        <span style="font-family:'Orbitron',sans-serif;font-size:clamp(.9rem,2.5vw,1.5rem);
+                            font-weight:700;color:#f5c518;text-shadow:0 0 10px rgba(245,197,24,.6)">KOMODO</span>
+                        <span style="font-size:.62rem;color:rgba(245,220,180,.45);letter-spacing:.1em;text-transform:uppercase">FLORES</span>
                     </div>
                 </div>
 
-                <!-- Tombol MULAI -->
+                <!-- Tombol MULAI bergaya Songke -->
                 <button onclick="wgStart()" style="
-                    position:relative;display:inline-flex;align-items:center;gap:12px;
-                    padding:17px 54px;font-family:'Orbitron',sans-serif;
-                    font-size:clamp(.95rem,2.5vw,1.25rem);font-weight:700;letter-spacing:.18em;
-                    color:#000;cursor:pointer;border:none;border-radius:999px;
-                    background:linear-gradient(135deg,#ffe066,#f5c518,#d97706);
-                    box-shadow:0 0 32px rgba(245,197,24,.55),0 0 64px rgba(245,197,24,.22);
-                    transition:transform .2s,box-shadow .2s,filter .2s;
+                    position:relative;display:inline-flex;align-items:center;gap:14px;
+                    padding:16px 52px;font-family:'Orbitron',sans-serif;
+                    font-size:clamp(.9rem,2.5vw,1.2rem);font-weight:700;letter-spacing:.2em;
+                    color:#fff;cursor:pointer;border:2px solid #f5c518;border-radius:4px;
+                    background:linear-gradient(135deg,#8B1a00,#c0392b,#8B1a00);
+                    box-shadow:0 0 28px rgba(192,57,43,.7),0 0 60px rgba(192,57,43,.25),
+                               inset 0 1px 0 rgba(245,197,24,.3);
+                    transition:transform .2s,box-shadow .2s;
                     animation:wg-fadeUp .9s 1s ease both
-                " onmouseover="this.style.transform='scale(1.07) translateY(-3px)';this.style.filter='brightness(1.1)'"
-                   onmouseout="this.style.transform='';this.style.filter=''">
+                " onmouseover="this.style.transform='scale(1.06) translateY(-3px)';this.style.boxShadow='0 0 44px rgba(192,57,43,.9),0 0 80px rgba(245,197,24,.2)'"
+                   onmouseout="this.style.transform='';this.style.boxShadow='0 0 28px rgba(192,57,43,.7),0 0 60px rgba(192,57,43,.25)'">
+                    <!-- Ornamen kiri -->
+                    <span style="font-size:.85rem;opacity:.7">◈</span>
                     MULAI
-                    <div style="width:20px;height:20px;border-right:3px solid #000;border-top:3px solid #000;transform:rotate(45deg)"></div>
+                    <!-- Panah -->
+                    <div style="width:18px;height:18px;border-right:2.5px solid #f5c518;border-top:2.5px solid #f5c518;transform:rotate(45deg)"></div>
                 </button>
+
+                <!-- Motto sekolah -->
+                <p style="margin-top:18px;font-size:.65rem;color:rgba(245,220,180,.35);
+                    letter-spacing:.18em;text-transform:uppercase;
+                    animation:wg-fadeUp .9s 1.2s ease both">
+                    "Toing Neka Dite · Taka Neka Dite"
+                </p>
             </div>
 
             <style>
                 @keyframes wg-fadeDown{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
                 @keyframes wg-fadeUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
-                @keyframes wg-pulse{0%,100%{box-shadow:0 0 24px rgba(245,197,24,.55)}50%{box-shadow:0 0 44px rgba(245,197,24,.8)}}
+                @keyframes wg-pulse{
+                    0%,100%{box-shadow:0 0 24px rgba(192,57,43,.7),0 0 60px rgba(245,197,24,.2)}
+                    50%{box-shadow:0 0 44px rgba(192,57,43,1),0 0 80px rgba(245,197,24,.35)}
+                }
                 @keyframes wg-blink{0%,100%{opacity:1}50%{opacity:.2}}
+                @keyframes wg-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
             </style>
 
             <script>
-                // Bintang di canvas
+                // Langit Flores: gradien senja + bintang + bukit savana
                 (function(){
                     var c = document.getElementById('wg-canvas');
-                    if (!c) return;
+                    if(!c) return;
                     var ctx = c.getContext('2d');
-                    var stars = [];
-                    function resize(){ c.width=innerWidth; c.height=innerHeight; }
+
+                    function resize(){
+                        c.width = innerWidth;
+                        c.height = innerHeight;
+                    }
                     resize();
                     window.addEventListener('resize', resize);
-                    for(var i=0;i<220;i++) stars.push({
-                        x:Math.random()*innerWidth, y:Math.random()*innerHeight,
-                        r:Math.random()*1.5+.3, a:Math.random(), da:Math.random()*.015+.005
+
+                    // Bintang
+                    var stars = [];
+                    for(var i=0;i<280;i++) stars.push({
+                        x: Math.random(), y: Math.random()*0.65,
+                        r: Math.random()*1.4+.2,
+                        a: Math.random(), da: Math.random()*.012+.004,
+                        // warna: putih, kuning hangat, atau merah bata
+                        hue: [0,30,0,0,0][Math.floor(Math.random()*5)]
                     });
+
                     function draw(){
-                        ctx.clearRect(0,0,c.width,c.height);
+                        var W=c.width, H=c.height;
+
+                        // Langit senja Flores: dari hitam ke merah bata ke oranye di cakrawala
+                        var sky = ctx.createLinearGradient(0,0,0,H*0.72);
+                        sky.addColorStop(0,   '#0d0200');
+                        sky.addColorStop(0.4, '#1a0800');
+                        sky.addColorStop(0.7, '#3d0d00');
+                        sky.addColorStop(1,   '#7a2000');
+                        ctx.fillStyle = sky;
+                        ctx.fillRect(0,0,W,H);
+
+                        // Cahaya matahari terbenam di kanan bawah langit
+                        var glow = ctx.createRadialGradient(W*0.78, H*0.72, 0, W*0.78, H*0.72, W*0.45);
+                        glow.addColorStop(0,   'rgba(245,140,20,.55)');
+                        glow.addColorStop(0.4, 'rgba(192,57,43,.25)');
+                        glow.addColorStop(1,   'rgba(0,0,0,0)');
+                        ctx.fillStyle = glow;
+                        ctx.fillRect(0,0,W,H);
+
+                        // Bintang
                         stars.forEach(function(s){
-                            s.a += s.da; if(s.a>1||s.a<0) s.da*=-1;
+                            s.a += s.da;
+                            if(s.a>1||s.a<0) s.da*=-1;
                             ctx.beginPath();
-                            ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-                            ctx.fillStyle='rgba(255,255,220,'+s.a+')';
+                            ctx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2);
+                            if(s.hue===30) ctx.fillStyle='rgba(255,220,120,'+s.a+')';
+                            else ctx.fillStyle='rgba(255,245,220,'+s.a+')';
                             ctx.fill();
                         });
+
+                        // Bulan sabit di kiri atas
+                        ctx.save();
+                        ctx.translate(W*0.12, H*0.12);
+                        ctx.beginPath();
+                        ctx.arc(0,0,22,0,Math.PI*2);
+                        ctx.fillStyle='rgba(255,230,150,.18)';
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(8,0,18,0,Math.PI*2);
+                        ctx.fillStyle='#0d0200';
+                        ctx.fill();
+                        ctx.restore();
+
+                        // Siluet bukit-bukit savana Manggarai
+                        ctx.fillStyle='#0d0200';
+
+                        // Bukit kiri
+                        ctx.beginPath();
+                        ctx.moveTo(0, H);
+                        ctx.bezierCurveTo(W*0.05,H*0.72, W*0.15,H*0.62, W*0.25,H*0.68);
+                        ctx.bezierCurveTo(W*0.3,H*0.72, W*0.35,H*0.75, W*0.4,H*0.78);
+                        ctx.lineTo(W*0.4,H);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Bukit tengah
+                        ctx.beginPath();
+                        ctx.moveTo(W*0.3,H);
+                        ctx.bezierCurveTo(W*0.35,H*0.65, W*0.45,H*0.58, W*0.55,H*0.65);
+                        ctx.bezierCurveTo(W*0.6,H*0.70, W*0.65,H*0.74, W*0.7,H*0.76);
+                        ctx.lineTo(W*0.7,H);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Bukit kanan
+                        ctx.beginPath();
+                        ctx.moveTo(W*0.6,H);
+                        ctx.bezierCurveTo(W*0.65,H*0.70, W*0.75,H*0.63, W*0.85,H*0.70);
+                        ctx.bezierCurveTo(W*0.9,H*0.74, W*0.95,H*0.78, W,H*0.80);
+                        ctx.lineTo(W,H);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Siluet Rumah Mbaru Niang di bukit tengah
+                        var rx = W*0.52, ry = H*0.63;
+                        ctx.fillStyle='#1a0800';
+                        // Atap kerucut
+                        ctx.beginPath();
+                        ctx.moveTo(rx, ry-28);
+                        ctx.lineTo(rx-20, ry);
+                        ctx.lineTo(rx+20, ry);
+                        ctx.closePath();
+                        ctx.fill();
+                        // Badan rumah
+                        ctx.fillRect(rx-14, ry, 28, 18);
+                        // Cahaya jendela kecil
+                        ctx.fillStyle='rgba(245,197,24,.5)';
+                        ctx.fillRect(rx-4, ry+4, 8, 8);
+
+                        // Tanah/ground
+                        var ground = ctx.createLinearGradient(0, H*0.75, 0, H);
+                        ground.addColorStop(0, '#1a0800');
+                        ground.addColorStop(1, '#0d0200');
+                        ctx.fillStyle = ground;
+                        ctx.fillRect(0, H*0.75, W, H*0.25);
+
                         requestAnimationFrame(draw);
                     }
                     draw();
