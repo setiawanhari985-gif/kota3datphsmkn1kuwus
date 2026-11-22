@@ -50873,7 +50873,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                             <input id="gate-nama" type="text" placeholder="Nama lengkap" class="hidden w-full px-4 py-3" style="user-select:text"/>
                             <div style="position:relative">
                                 <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none">✉️</span>
-                                <input id="gate-email" type="email" placeholder="Email" autocomplete="username" class="w-full px-4 py-3" style="user-select:text;padding-left:2.6rem"/>
+                                <input id="gate-email" type="text" placeholder="Email atau Username" autocomplete="username" class="w-full px-4 py-3" style="user-select:text;padding-left:2.6rem"/>
                             </div>
                             <div style="position:relative">
                                 <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none">🔑</span>
@@ -61204,7 +61204,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
             }
               , LOCAL_LOGIN = {
                 SHARED_HASH: "",
-                USERS: { "setiawan.hari985@gmail.com": "98b06210555c9557804a8db256c6909afe54c0f30e939c30bcee829ccd277e38" }
+                USERS: {
+                    "setiawan.hari985@gmail.com": "98b06210555c9557804a8db256c6909afe54c0f30e939c30bcee829ccd277e38",
+                    "smkn1kuwus": "4755da55060fa7661627066b909d92fae421f7e66dd0c0369f1d8e1e2c3271aa"
+                }
             };
             let _gateProceed = null
               , gateMode = "login"
@@ -61328,8 +61331,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                 const e = $g("gate-email").value.trim().toLowerCase()
                   , t = $g("gate-pass").value
                   , n = $g("gate-btn");
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-                    gateMsg("Isi email yang valid.", !1);
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) && !/^[a-z0-9_.-]{3,}$/.test(e)) {
+                    gateMsg("Isi email atau username yang valid.", !1);
                     return
                 }
                 if (!t) {
