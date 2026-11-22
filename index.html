@@ -50726,7 +50726,12 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                     wg.style.opacity = '0';
                     setTimeout(function(){
                         wg.style.display = 'none';
-                        if(ag) ag.style.display = 'block';
+                        // Siswa yang scan barcode (ada param "room") langsung ke menu nama,
+                        // tidak perlu ke menu login guru, jadi jangan tampilkan access-gate.
+                        var p = new URLSearchParams(location.search);
+                        var h = new URLSearchParams(location.hash.replace(/^#/, ''));
+                        var isStudent = !!(p.get('room') || h.get('room'));
+                        if(ag && !isStudent) ag.style.display = 'block';
                     }, 600);
                 }
             </script>
